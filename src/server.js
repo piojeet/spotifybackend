@@ -1,27 +1,40 @@
-import express from 'express'
-import cors from 'cors'
-import 'dotenv/config'
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
 import songRouter from './routes/songRoutes.js';
 import connectDB from './config/mongodb.js';
 import connectCloudinary from './config/cloudinary.js';
 import albumRouter from './routes/albumRoutes.js';
 
-
-// app config 
+// App config 
 const app = express();
 const port = process.env.PORT || 5000;
+
+// Connect to Database and Cloudinary
 connectDB();
 connectCloudinary();
 
-// middlewares 
+// Middlewares 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://spotifyvirtual.netlify.app/' // Replace with your frontend domain
+}));
 
-// initailizing routes
-app.use("/api/song",songRouter)
-app.use("/api/album",albumRouter)
+// Initializing Routes
+app.use("/api/song", songRouter);
+app.use("/api/album", albumRouter);
 
+// Health Check Route
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
 
-app.get('/',(req,res)=> res.send("API working"))
+// Default Route
+app.get('/', (req, res) => res.send("API working"));
 
-app.listen(port,()=>console.log(`Server started on ${port}`))
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// Start Server
+app.listen(port, () => console.log(`Server started on ${port}`));
