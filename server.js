@@ -1,10 +1,10 @@
 import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
-import songRouter from './routes/songRoutes.js';
-import connectDB from './config/mongodb.js';
-import connectCloudinary from './config/cloudinary.js';
-import albumRouter from './routes/albumRoutes.js';
+import songRouter from './src/routes/songRoutes.js';
+import connectDB from './src/config/mongodb.js';
+import connectCloudinary from './src/config/cloudinary.js';
+import albumRouter from './src/routes/albumRoutes.js';
 
 
 // app config 
@@ -21,9 +21,6 @@ app.use(cors());
 app.use("/api/song",songRouter)
 app.use("/api/album",albumRouter)
 
-app.use(cors({
-  origin: 'https://spotifyvirtual.netlify.app/'
-}));
 
 app.get('/',(req,res)=> res.send("API working"))
 
